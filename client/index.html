@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ReeBot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card">
+    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">ACCEUIL</a>
+    <a href="#band" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PROJET</a>
+    <a href="#tour" class="w3-bar-item w3-button w3-padding-large w3-hide-small">FORMATION</a>
+    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
+    <div class="w3-dropdown-hover w3-hide-small">
+      <button class="w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>     
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="#" class="w3-bar-item w3-button">Merchandise</a>
+        <a href="#" class="w3-bar-item w3-button">Extras</a>
+        <a href="#" class="w3-bar-item w3-button">Media</a>
+      </div>
+    </div>
+    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+  </div>
+</div>
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#band" class="w3-bar-item w3-button w3-padding-large">PROJET</a>
+  <a href="#tour" class="w3-bar-item w3-button w3-padding-large">FORMATION</a>
+  <a href="#contact" class="w3-bar-item w3-button w3-padding-large">CONTACT</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large">ENCORE</a>
+</div>
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:2000px;margin-top:46px">
+
+  <div id="app">
+        <div id="chat_container"></div>
+        <form>
+            <textarea name="prompt" cols="1"  placeholder="Taper une question ..."></textarea>
+            <button type="submit"><img src="assets/send.svg"></button>
+        </form>
+          
+        <div class="make-question">
+          <div class="text-sujet">
+            <input type="text" id="text-input" placeholder="Décris l'objectif de ton projet...">
+          </div>
+          <div class="dropdowns">
+            <select name="Interface">
+              <option value="-1" selected>Interface</option>
+              <!-- <option disabled selected hidden value="">Interface</option> -->
+              <option value="micro:bit">Micro:bit</option>
+              <option value="arduino">Arduino</option>
+              <option value="PSP">ESP32</option>
+            </select>
+            <select name="Capteur">
+              <option value="-1" selected>Capteur</option>
+              <option value="bouton Poussoir">Bouton Poussoir</option>
+              <option value="potentiomètre">potentiomètre</option>
+              <option value="photorésistance">Photorésistance</option>
+              <option value="photodiode">Photodiode</option>
+              <option value="humidité">Humidité</option>
+              <option value="lumière">Lumière</option>
+              <option value="flexibilié">Flexibilié</option>
+              <option value="force">Force</option>
+              <option value="infrarouge">Infrarouge</option>
+              <option value="IRP">IRP</option>
+              <option value="distance à ultrasons">Distance</option>
+              <option value="inclinaison">Inclinaison</option>
+              <option value="température">Température</option>
+              <option value="gaz">Gaz</option>
+              <option value="clavier">Clavier</option>
+              <option value="commutateur DIP">Commutateur</option>
+              <option value="humidité">humidité</option>
+            </select>
+    
+            <select name="Actionneur">
+              <option value="-1" selected>Actionneur</option>
+              <option value="un LED">LED</option>
+              <option value="un LED RGB">LED RGB</option>
+              <option value="une ampoule">Ampoule</option>
+              <option value="un néoPixel">NéoPixel</option>
+              <option value="un bijou NéoPixel">Bijou NéoPixel</option>
+              <option value="une bague NeoPixel 12">Bague NeoPixel 12</option>
+              <option value="une bague NeoPixel 16">Bague NeoPixel 16</option>
+              <option value="une bague NeoPixel 24">Bague NeoPixel 24</option>
+              <option value="une bande NéoPixel 4">Bande NeoPixel 4</option>
+              <option value="une bande NéoPixel 6">Bande NeoPixel 6</option>
+              <option value="une bande NéoPixel 8">Bande NeoPixel 8</option>
+              <option value="une bande NéoPixel 10">Bande NeoPixel 10</option>
+              <option value="une bande NéoPixel 12">Bande NeoPixel 12</option>
+              <option value="une bande NéoPixel 16">Bande NeoPixel 16</option>
+              <option value="une bande NéoPixel 20">Bande NeoPixel 20</option>
+              <option value="un moteur vibrant">Moteur vibrant</option>
+              <option value="un moteur DC">Moteur DC</option>
+              <option value="un moteur DC avec encodeur">Moteur DC Encodeur</option>
+              <option value="un micro-Servo">Micro-Servo</option>
+              <option value="un motoréducteur passe-temps">Motoréducteur</option>
+              <option value="un piézo">Piézo</option>
+              <option value="un télécommande IR">Télécommande IR</option>
+              <option value="un afficheur à 7 segments">Afficheur 7S</option>
+              <option value="un LCD 16x2">LCD 16x2</option>
+              <option value="un LCD 16x2 (12C)">LCD 16x2 (12C)</option>
+              <option value="un afficheur d'horloge à 7 segments">Afficheur d'horloge 7S</option>
+            </select>
+    
+            <select name="Probleme">
+              <option value="-1" selected>Problème</option>
+              <option value="la programmation">Programmation</option>
+              <option value="du câblage">Câblage</option>
+              <option value="la connexion">Connexion</option>
+              <option value="du matériels">Matériel</option>
+              <option value="de débogage">Débogage</option>
+            </select>
+    
+            <select name="Composante">
+              <option value="-1" selected>Autre composante</option>
+              <option value="une carte GPIO">carte GPIO</option>
+              <option value="un résistance">Résistance</option>
+              <option value="un condensateur">Condensateur</option>
+              <option value="une diode">Diode</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="details">
+            <div class="detailQuestion">
+              <select name="requestion">
+                <option value="-1" selected>Questions</option>
+                <option value="Explique moi, théoriquement,">Expliaque moi l'étape</option>
+                <option value="Peux-tu nous donne comment réaliser pratiquement ce qui cité dans">Peux-tu nous donne comment réaliser pratiquement ce qui cité dans</option>
+                <option value="je croix que tu fais une faute au niveau de">je croix que tu fais une faute</option>
+              </select>
+            </div>
+            <div class="detailEtapes">
+              <select name="etapes">
+                <option value="-1" selected>Etapes</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </div>
+          </select>
+          
+        </div>
+      </div>
+  </div>
+      
+    
+      
+  
+
+  
+
+  
+  <!-- The Contact Section -->
+  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
+    <h2 class="w3-wide w3-center">CONTACT</h2>
+    <p class="w3-opacity w3-center"><i>ReeBot est un ChatBot alimenté par ChatGPT, Il permet aux élèves de surmonter des obstacles éducatifs en robotique</i></p>
+    <div class="w3-row w3-padding-32">
+      <div class="w3-col m6 w3-large w3-margin-bottom">
+        <i class="fa fa-map-marker" style="width:30px"></i> Feriana, TN<br>
+        <i class="fa fa-phone" style="width:30px"></i> Phone: +216 21380039<br>
+        <i class="fa fa-envelope" style="width:30px"> </i> Email: rhimi.wajih@gmail.com<br>
+      </div>
+      <div class="w3-col m6">
+        <form action="/action_page.php" target="_blank">
+          <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
+            <div class="w3-half">
+              <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
+            </div>
+            <div class="w3-half">
+              <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
+            </div>
+          </div>
+          <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message">
+          <button class="w3-button w3-black w3-section w3-right" type="submit">SEND</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+<!-- End Page Content -->
+</div>
+
+<!-- Image of location/map -->
+<!-- <img src="/w3images/map.jpg" class="w3-image w3-greyscale-min" style="width:100%"> -->
+
+<!-- Footer -->
+<div class="footerclass">
+  <footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">ReeBot</a></p>
+  </footer>
+</div>
+<script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}    
+  x[myIndex-1].style.display = "block";  
+  setTimeout(carousel, 4000);    
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+// When the user clicks anywhere outside of the modal, close it
+var modal = document.getElementById('ticketModal');
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
