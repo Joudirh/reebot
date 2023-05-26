@@ -167,7 +167,7 @@ function updateetapesMsgList() {
           detailsphrases.push(`${value}`);
           break;
         case "etapes":
-          detailsphrases.push(`l'étape numéro ${value}.`);
+          detailsphrases.push(`la phrase numéro ${value} que tu ma cites.`);
           break;
         
       }
