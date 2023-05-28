@@ -6,6 +6,7 @@ const form = document.querySelector('form');
 const chatContainer = document.querySelector('#chat_container');
 
 
+let responses = [];
 
 
 
@@ -86,10 +87,13 @@ dropdownContainer.addEventListener('change', updateMsgList);
 
 //////////////////////
 
+
 let detailsContainer = document.querySelector('.details');
 let detailsdropdowns = detailsContainer.querySelectorAll('select');
 
-detailsContainer.addEventListener('change', updateetapesMsgList);
+//detailsContainer.addEventListener('change', updateetapesMsgList);
+const requestionSelect = document.getElementById("requestionSelect");
+requestionSelect.addEventListener('change', updateetapesMsgList);
 
 // Initialiser les sélections des dropdowns
 dropdowns.forEach(function(dropdown) {
@@ -139,7 +143,7 @@ function updateMsgList() {
   });
 
   msgList = phrases.length > 0 ? phrases : [];
-  console.log(msgList);
+  //console.log(msgList);
   // Afficher ou vider msgOutput
   if (msgList.length === 0) {
     msgOutput.value = "";
@@ -154,36 +158,28 @@ function updateMsgList() {
 }
 
 function updateetapesMsgList() {
-  let detailsphrases = [];
 
-  //msgOutput.style.height = 'auto';  Réinitialisez la hauteur à auto pour éviter les problèmes de taille
+  // msgOutput.style.height = msgOutput.scrollHeight + 'px'; // Ajustez la hauteur en fonction du contenu
+
+  //   if (requestionSelect.value !== "-1") {
+  //     msgOutput.value = `Comment ${requestionSelect.textContent.charAt(0).toLowerCase()}${requestionSelect.textContent.slice(1)} ?`; // Ajouter "Comment" et convertir la première lettre en minuscule
+  //   }
+
+  const selectedPhrase = requestionSelect.options[requestionSelect.selectedIndex].textContent;
+  const firstLetter = selectedPhrase.charAt(0).toLowerCase();
+  const remainingText = selectedPhrase.slice(1);
+  const formattedPhrase = `Comment ${firstLetter}${remainingText} ?`;
+  
   msgOutput.style.height = msgOutput.scrollHeight + 'px'; // Ajustez la hauteur en fonction du contenu
 
-  detailsdropdowns.forEach(function(detailsdropdown) {
-    let value = detailsdropdown.value;
-    if (value !== "-1") {
-      switch (detailsdropdown.name) {
-        case "requestion":
-          detailsphrases.push(`${value}`);
-          break;
-        case "etapes":
-          detailsphrases.push(`la phrase numéro ${value} que tu ma cites.`);
-          break;
-        
-      }
-    }
-  });
-
-  etapesmsgList = detailsphrases.length > 0 ? detailsphrases : [];
-  // Afficher ou vider msgOutput
-  console.log(etapesmsgList);
-  if (etapesmsgList.length === 0) {
-    msgOutput.value = "";
-  } else {
-    msgOutput.value = etapesmsgList.join(" ");
+  if (requestionSelect.value !== "-1") {
+    msgOutput.value = formattedPhrase;
   }
-
 }
+
+
+
+
 
 const handleSubmit = async(e) => {
   e.preventDefault();
@@ -213,7 +209,9 @@ const handleSubmit = async(e) => {
   loader(messageDiv);
 
   // fetch data from server -> bot's response
+  
   const response = await fetch('https://reebot.onrender.com', {
+  //const response = await fetch('http://localhost:5000', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -229,22 +227,19 @@ const handleSubmit = async(e) => {
   if(response.ok){
     const data = await response.json();
     const parsedData = data.bot.trim();
-
     typeText(messageDiv, parsedData);
+
+    ///////////////// Ajouter les réponses 
+    responses.push(parsedData);
+    displayResponses();
+    //console.log(responses);
+    /////////////////
+
   } else{
     const err = await response.text();
-
     messageDiv.innerHTML = "Something went wrong";
-
     alert(err);
   }
-
- 
-
-
-    
-
-
 
 }
 
@@ -254,4 +249,106 @@ form.addEventListener('keyup',(e) => {
     handleSubmit(e);
   }
 })
+
+///----------
+
+var CountPhrases = 0;
+var CountReponse = 0;
+var currentResponse = [];
+var tabLongReponse = [];
+
+// Fonction pour afficher les réponses stockées dans la console du navigateur
+function displayResponses() {
+    //console.log(responses);
+      // responses contient la reponse de chatgpt sous forme d'une liste de phrases non formatées
+    const cleanResponses = responses.map(response => {
+      // Supprimer le retour à la ligne "\n"
+      const cleanedResponse = response.replace(/\n/g, '');
+      // Supprimer chaque numéro suivi directement par un point et un espace, mais ne pas supprimer les lettres suivies par des chiffres, un point et un espace
+      const withoutNumbers = cleanedResponse.replace(/\b(\d+)\.\s(?!([A-Za-z]+\d*\.\s))/g, '');
+      // Diviser la réponse en phrases terminées par un point
+      const phrases = withoutNumbers.split('.').filter(phrase => phrase.trim() !== '');
+      return phrases;
+    });
+
+    // result contient la reponse de chatgpt sous forme d'une liste de phrases formatées
+    const result = cleanResponses.flat().map(phrase => phrase.trim());
+
+    CountReponse += 1;
+
+    let lastCountPhrases = CountPhrases;
+    CountPhrases = result.length;
+
+    const currentResponse = result.slice(lastCountPhrases, CountPhrases);
+
+    tabLongReponse.push(currentResponse.length);
+
+    // Récupérer l'élément select du sélecteur "requestion"
+    const etapesSelect = document.getElementById("etapesSelect");
+    
+    // // Supprimer toutes les options actuelles du sélecteur "etapes"
+    // while (etapesSelect.firstChild && etapesSelect.firstChild.value !== "-1") {
+    //   etapesSelect.removeChild(etapesSelect.firstChild);
+    // }
+
+    const options = etapesSelect.querySelectorAll('option');
+    for (let i = 1; i < options.length; i++) {
+      etapesSelect.removeChild(options[i]);
+    }
+
+   
+     // Ajouter les nouvelles options basées sur le nombre de réponses de chatgpt
+    for (let i = 0; i < CountReponse; i++) {
+      const option = document.createElement("option");
+      option.value = i.toString();
+      option.textContent = (i + 1).toString();
+      etapesSelect.appendChild(option);
+    }
+
+    // Écouter l'événement de changement du sélecteur "etapes"
+    //etapesSelect.addEventListener('change', updateRequestionOptions(currentResponse));
+    etapesSelect.addEventListener('change', function() {
+      updateRequestionOptions(tabLongReponse, result);
+    });
+    
+    //updateRequestionOptions();
+}
+
+
+// Fonction pour mettre à jour les options du sélecteur "requestion" en fonction de l'étape sélectionnée
+function updateRequestionOptions(tabLongReponse, result) {
+  const etapesSelect = document.getElementById("etapesSelect");
+  const requestionSelect = document.getElementById("requestionSelect");
+
+  const selectedEtapeIndex = parseInt(etapesSelect.value);
+  //console.log(selectedEtapeIndex);
+
+  // Supprimer toutes les options actuelles du sélecteur "requestion"
+  const options = requestionSelect.querySelectorAll('option');
+    for (let i = 1; i < options.length; i++) {
+      requestionSelect.removeChild(options[i]);
+    }
+
+  // Vérifier si l'étape sélectionnée est valide
+  if (selectedEtapeIndex >= 0) {
+    let nbrPhrasePrecedent = 0;
+
+    for (let i = 0; i < selectedEtapeIndex; i++){
+      nbrPhrasePrecedent = nbrPhrasePrecedent + tabLongReponse[i];
+    }
+
+    const selectedEtapeResult = result.slice(nbrPhrasePrecedent, nbrPhrasePrecedent + tabLongReponse[selectedEtapeIndex]);
+    console.log(selectedEtapeResult);
+
+    for (let i = 0; i < selectedEtapeResult.length; i++) {
+      const option = document.createElement("option");
+      option.value = i.toString();
+      option.textContent = selectedEtapeResult[i];
+      requestionSelect.appendChild(option);
+    }
+  }
+}
+
+// Appeler la fonction displayResponses pour afficher les réponses initiales
+//displayResponses();
 
