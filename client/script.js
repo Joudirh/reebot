@@ -1,19 +1,14 @@
 import bot from './assets/bot.svg';
 import user from './assets/user.svg'
 
-const app = document.getElementById('app');
 const form = document.querySelector('form');
 const chatContainer = document.querySelector('#chat_container');
 
 
-let responses = [];
-
-
-
-let loadInterval
 // Cette fonction en JavaScript efface le contenu d'un élément
 // et affiche ensuite des points à intervalles réguliers. 
 // Une fois que le contenu de l'élément est rempli de quatre points, il est réinitialisé à vide.
+let loadInterval;
 function loader(element){
   element.textContent = ''
 
@@ -85,13 +80,9 @@ let dropdowns = dropdownContainer.querySelectorAll('select');
 objectif.addEventListener('input', updateMsgList);
 dropdownContainer.addEventListener('change', updateMsgList);
 
-//////////////////////
-
-
 let detailsContainer = document.querySelector('.details');
 let detailsdropdowns = detailsContainer.querySelectorAll('select');
 
-//detailsContainer.addEventListener('change', updateetapesMsgList);
 const requestionSelect = document.getElementById("requestionSelect");
 requestionSelect.addEventListener('change', updateetapesMsgList);
 
@@ -107,8 +98,6 @@ detailsdropdowns.forEach(function(etapesdropdown) {
 
 
 var msgList = [];
-var etapesmsgList = [];
-
 function updateMsgList() {
   let phrases = [];
 
@@ -158,19 +147,31 @@ function updateMsgList() {
 }
 
 function updateetapesMsgList() {
+  const selectedPhrase =  requestionSelect.options[requestionSelect.selectedIndex].textContent;
+  const mots = selectedPhrase.split(" ");
+  const motsFormates = [];
 
-  // msgOutput.style.height = msgOutput.scrollHeight + 'px'; // Ajustez la hauteur en fonction du contenu
+  // Rendre la première lettre du premier mot en minuscule
+  mots[0] = mots[0][0].toLowerCase() + mots[0].slice(1);
 
-  //   if (requestionSelect.value !== "-1") {
-  //     msgOutput.value = `Comment ${requestionSelect.textContent.charAt(0).toLowerCase()}${requestionSelect.textContent.slice(1)} ?`; // Ajouter "Comment" et convertir la première lettre en minuscule
-  //   }
+  mots.forEach((mot) => {
+    let motFormate = mot;
 
-  const selectedPhrase = requestionSelect.options[requestionSelect.selectedIndex].textContent;
-  const firstLetter = selectedPhrase.charAt(0).toLowerCase();
-  const remainingText = selectedPhrase.slice(1);
-  const formattedPhrase = `Comment ${firstLetter}${remainingText} ?`;
-  
-  msgOutput.style.height = msgOutput.scrollHeight + 'px'; // Ajustez la hauteur en fonction du contenu
+    if (mot === "ouvrez") {
+      motFormate = "ouvrir";
+    } else if (mot.endsWith("ez")) {
+      motFormate = mot.slice(0, -2) + "er";
+    } else if (mot.endsWith("issez")) {
+      motFormate = mot.slice(0, -5) + "ir";
+    } else if (mot.endsWith("ez-vous")) {
+      motFormate = "se " + mot.slice(0, -7) + "er";
+    }
+
+    motsFormates.push(motFormate);
+  });
+
+  const formattedPhrase = "Comment " + motsFormates.join(" ") + " ?";
+  msgOutput.style.height = msgOutput.scrollHeight + "px"; // Ajustez la hauteur en fonction du contenu
 
   if (requestionSelect.value !== "-1") {
     msgOutput.value = formattedPhrase;
@@ -179,8 +180,7 @@ function updateetapesMsgList() {
 
 
 
-
-
+let responses = [];
 const handleSubmit = async(e) => {
   e.preventDefault();
 
@@ -250,11 +250,10 @@ form.addEventListener('keyup',(e) => {
   }
 })
 
-///----------
+
 
 var CountPhrases = 0;
 var CountReponse = 0;
-var currentResponse = [];
 var tabLongReponse = [];
 
 // Fonction pour afficher les réponses stockées dans la console du navigateur
@@ -287,17 +286,13 @@ function displayResponses() {
     const etapesSelect = document.getElementById("etapesSelect");
     
     // // Supprimer toutes les options actuelles du sélecteur "etapes"
-    // while (etapesSelect.firstChild && etapesSelect.firstChild.value !== "-1") {
-    //   etapesSelect.removeChild(etapesSelect.firstChild);
-    // }
-
     const options = etapesSelect.querySelectorAll('option');
     for (let i = 1; i < options.length; i++) {
       etapesSelect.removeChild(options[i]);
     }
 
    
-     // Ajouter les nouvelles options basées sur le nombre de réponses de chatgpt
+    // Ajouter les nouvelles options basées sur le nombre de réponses de chatgpt
     for (let i = 0; i < CountReponse; i++) {
       const option = document.createElement("option");
       option.value = i.toString();
@@ -306,12 +301,9 @@ function displayResponses() {
     }
 
     // Écouter l'événement de changement du sélecteur "etapes"
-    //etapesSelect.addEventListener('change', updateRequestionOptions(currentResponse));
     etapesSelect.addEventListener('change', function() {
       updateRequestionOptions(tabLongReponse, result);
     });
-    
-    //updateRequestionOptions();
 }
 
 
@@ -349,6 +341,5 @@ function updateRequestionOptions(tabLongReponse, result) {
   }
 }
 
-// Appeler la fonction displayResponses pour afficher les réponses initiales
-//displayResponses();
+
 
